@@ -1,0 +1,10 @@
+
+* Audio Signal Processing for Music
+
+Is a course imparted online by Professor Xavier Serra and Julius O
+Smith at coursera
+
+And in this repository I will keep my notes of the course.
+
+I will not publish the home-works, they will be stored in a private
+repository as a sub-module.
