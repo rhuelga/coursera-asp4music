@@ -1,0 +1,3 @@
+[submodule "sms-tools"]
+	path = sms-tools
+	url = https://github.com/rhuelga/sms-tools.git
