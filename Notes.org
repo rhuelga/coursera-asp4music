@@ -1,0 +1,367 @@
+#+TITLE: Audio Signal Processing for Music Applications
+#+DATE: <2015-09-24 Thu>
+
+by Prof Xavier Serra, Prof Julius O Smith, III
+
+ [[https://class.coursera.org/audio-002/][link]]
+
+* Week 1: Introduction
+
+Topics covered: Introduction to the course, to the field of Audio
+Signal Processing, and to the basic mathematics needed for the
+course. Introductory demonstrations to some of the applications and
+tools to be used. Introduction to Python and to the sms-tools package,
+the main programming tool for the course.
+
+Work to be done: 1 quiz, 1 programming assignment, and 1 survey.
+
+** 01 Welcome
+** 02 Lecture
+*** Application: Compresion
+*** Application:
+*** Application: Synthesis
+   - Granular Synthesis
+   - physical modeling,
+   - Wavesshaping
+   - sampling
+   - Spectral Synthesis
+ - Applications: Description
+   - Low-level: loudness, timbre, pitch...
+   - Mid-level: rhythm, harmony, melody...
+   - High-level: genre, emotions, similarity...
+ - References and Credits
+
+   - Wikipedia: https://en.wikipedia.org/wiki/Audio_signal_processing
+   - Audacity
+   - https://github.com/MTG/sms-tools
+
+** 03 Course Outline
+** 04 Some basic mathematics
+*** Index
+    - Sinusodial functions
+    - Complex numbers
+    - Euler's formula
+    - Complex sinusoids
+    - Scalar product of sequences
+    - Even and odd functions
+    - Convolution
+*** Sinusoidal functions (sinewaves)
+
+ #+BEGIN_LaTeX
+ \begin{equation}
+ x[n] = A \cos(\omega n T + \varphi) = A \cos(2\pi f n T + \varphi )
+ \end{equation}
+ #+END_LaTeX
+ A: amplitude\\
+ $\omega$: angular frequency in radians\\
+ f=\omega/2\pi: frequency in Hz\\
+ \varphi: initial phase in radians\\
+ n: time index\\
+ T=1/f_s: sampling period in seconds (t=nT=n/f_s)
+*** Complex numbers
+#+BEGIN_LaTeX
+\begin{equation}
+    (a+jb)
+\end{equation}
+#+END_LaTeX
+a, b: real numbers\\
+j = \sqrt{-1}: imaginary unit
+
+  - Rectanguar (a+jb)
+  - Polar form:
+    A = \sqrt{a^2+b^2}\\
+    \varphi = \tan^-1(b/a)
+*** Euler's formula [7:01]
+#+BEGIN_LaTeX
+\begin{equation}
+e^{j\varphi}=\cos(\varphi) + j \sin(\varphi)
+
+\cos(\varphi)=\frac{e^{j\varphi}+e^{-j\varphi}}{2}
+
+\sin(\varphi)=\frac{e^{j\varphi}-e^{-j\varphi}}{2j}
+#+END_LaTeX
+
+*** Complex Sinewave [8:20]
+
+\[
+\bar{x}[n] = A e^{j(\omega n T + \varphi)} = A e^\varphi e^{j(\omega n T)} = X e^{j(\omega n T)} = A \cos(\omega n T + \varphi) + j A \sin(\omega n T + \varphi)
+\]
+
+Real sinewave:
+\[
+x[n] = A \cos(\omega nT + \varphi) = A(\frac{e^{j(\omega nT+\varphi)}+
+e^{-j(\omega nT+\varphi)}}{2})
+=\frac{1}{2} X e^{j(\omega nT)} + \frac{1}{2} X^* e^{-j(\omega nT)}
+=\frac{1}{2} \bar{x}[n] + \frac{1}{2}\bar{x}^* [n]
+= \mathfrak{R} \left\{ \bar{x}[n] \right\}
+\]
+
+*** Scalar (dot) product of sequences
+\[
+\langle x, y \rangle = \sum_{n=0}^{N-1} x[n] * \bar{y}[n]
+\]
+
+Example:
+\[
+x[n]=[0,j,1]; y[n]=[1,j,j]
+\]
+\[
+\langle x, y \rangle = 0*1 + j*(-j) + 1*(-j) = 0+1+(-j) = 1-j
+\]
+
+the second sequence is conjugated
+
+*** Orthogonality of sequences
+\[
+x \perp y \iff \langle x, y \rangle = 0
+\]
+
+*** Even and odd functions
+f[n] is even if f[-n]  = f[n] [symmetric]
+f[n] is odd if f[-n]  = f[n] [asymmetric]
+
+*** Convolution
+
+\[
+y[n]=(x_1[n] * x_2[n])_n = \sum_{m=0}^{N-1} x_1[m] x_2[n-m]
+\]
+
+*** References and credits
+    - Wikipedia sinusoid, Complex_numbers, Euler_formula, Dot_product,
+      Convolution
+    - Reference for the mathematics of the Discrete Fourier Transform
+      (DFT) by Julius O. Smith: https://ccrma.stanford.edu/~jos/mdft
+
+** 05 Introduction to Audacity
+   http://web.audacityteam.org
+
+** 06 Introduction to SonicVisualizer
+*** plugins:
+    - Pitch detector (YIN Pitch algorithm)
+** 07 Introduction to SMS-tools
+
+** 08 Introduction to Python
+
+   Course use python 2.7
+
+   The video says that python-pygame is not needed
+*** For OSX MacPort
+#+BEGIN_SRC shell
+sudo port install py27-ipython py27-matplotlib py27-numpy py27-scipy  py27-cython
+#+END_SRC
+
+*** For GNU/Linux
+#+BEGIN_SRC shell
+sudo apt-get install python-dev ipython python-matplotlib python-numpy python-scipy cython
+#+END_SRC
+
+*** Arrays
+#+BEGIN_SRC python
+import numpy as np
+
+a = np.array([0,1,2,3,4])
+
+import matplotlib.pyplot as plt
+
+plt.plot(a)
+plot.show()
+
+b = a[::-1]  # => reverse array
+
+#+END_SRC
+
+*** Python sound Files
+
+ #+BEGIN_SRC python
+   from scipy.io.wavfile import read
+
+   help(read)  # => prints documentation of the function
+
+   (fs,x) = read('flute-A4.wav')
+
+   fs  #=> 44100 sample rate
+   x  #=> array([0, -2, .....],dtype=int16)
+
+   x.size  #=> 94803
+   duration = x.size/float(fs)
+
+   import matplotlib.pyplot as plt
+
+   plt.plot(s)
+   plt.show()
+
+   import numpy as np
+
+   t = np.arange(x.size)/float(fs)   #=> array of seconds
+
+   plt.plot(t,x)
+   plt.show()
+
+   y = x[44100:45100]
+   plt.plot(y)
+   plt.show()
+
+   np.max(y)  #=> max value
+
+   np.max(abs(y))  #=> 7132
+
+   np.sum(y)
+
+   # save a sound file
+   from scipy.io.wavfile import write
+   write('test.wav', fs, y)
+
+   # play sound file
+   !play flute-A4.wav
+
+ #+END_SRC
+** 09 Spectral Model Synthesizer (sms) tools
+
+Some functions need to be compiled to c
+
+#+BEGIN_SRC shell
+cd sms-tools/software/models/utilFunctions_C
+python compileModule.py build_ext --inplace
+#+END_SRC
+
+#+RESULTS:
+| running        | build_ext                         |             |                |                  |                                  |                       |                                                   |                                                    |         |     |                                                                                                                 |                     |                                                                                 |                                                                                                              |                                                                                 |    |                  |    |                                                    |
+| skipping       | 'cutilFunctions.c'                | Cython      | extension      | (up-to-date)     |                                  |                       |                                                   |                                                    |         |     |                                                                                                                 |                     |                                                                                 |                                                                                                              |                                                                                 |    |                  |    |                                                    |
+| building       | 'utilFunctions_C'                 | extension   |                |                  |                                  |                       |                                                   |                                                    |         |     |                                                                                                                 |                     |                                                                                 |                                                                                                              |                                                                                 |    |                  |    |                                                    |
+| creating       | build                             |             |                |                  |                                  |                       |                                                   |                                                    |         |     |                                                                                                                 |                     |                                                                                 |                                                                                                              |                                                                                 |    |                  |    |                                                    |
+| creating       | build/temp.macosx-10.9-x86_64-2.7 |             |                |                  |                                  |                       |                                                   |                                                    |         |     |                                                                                                                 |                     |                                                                                 |                                                                                                              |                                                                                 |    |                  |    |                                                    |
+| /usr/bin/clang | -fno-strict-aliasing              | -fno-common | -dynamic       | -pipe            | -Os                              | -fwrapv               | -DNDEBUG                                          | -g                                                 | -fwrapv | -O3 | -Wall                                                                                                           | -Wstrict-prototypes | -I/opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 | -I/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/numpy/core/include | -I/opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 | -c | utilFunctions.c  | -o | build/temp.macosx-10.9-x86_64-2.7/utilFunctions.o  |
+| /usr/bin/clang | -fno-strict-aliasing              | -fno-common | -dynamic       | -pipe            | -Os                              | -fwrapv               | -DNDEBUG                                          | -g                                                 | -fwrapv | -O3 | -Wall                                                                                                           | -Wstrict-prototypes | -I/opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 | -I/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/numpy/core/include | -I/opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 | -c | cutilFunctions.c | -o | build/temp.macosx-10.9-x86_64-2.7/cutilFunctions.o |
+| /usr/bin/clang | -bundle                           | -undefined  | dynamic_lookup | -L/opt/local/lib | -Wl,-headerpad_max_install_names | -L/opt/local/lib/db48 | build/temp.macosx-10.9-x86_64-2.7/utilFunctions.o | build/temp.macosx-10.9-x86_64-2.7/cutilFunctions.o | -lm     | -o  | /Users/kanzeon/Projects/courses/coursera-audio-002/sms-tools/software/models/utilFunctions_C/utilFunctions_C.so |                     |                                                                                 |                                                                                                              |                                                                                 |    |                  |    |                                                    |
+
+* Week 2: Discrete Fourier Transform
+Topics covered: The Discrete Fourier Transform equation; complex
+exponentials; scalar product in the DFT; DFT of complex sinusoids; DFT
+of real sinusoids; and inverse-DFT. Demonstrations on how to analyze a
+sound using the DFT; introduction to Freesound.org. Implementing
+sinusoids and the DFT in Python.
+
+Work to be done: 1 quiz and 1 programming assignment.
+
+** 2T1 Theory Lecture1: DFT 1
+
+*** Discrete Fourier Transform
+\[
+X[k]= \sum_{n=0}^{N-1}x[]e^{-j2\pi kn/N} \& k=0,...,N-1
+\]
+
+Where:
+  - $$n$$ :: discrete time index (normalized time , T=1)
+  - $k$ :: discrete frequency index
+  - $\omega_k=2\pi k/N$ :: frequency in radians
+  - $f_k=f_s k/N$ :: frequency in Hz($f_s$: sampling rate)
+
+
+\[
+\bar{s_k}=e^{-j2\pi kn/N}=\cos(2\pi kn/N)-j\sin(2\pi kn/N)
+\]
+
+for N=4, thus for n=0,1,2,3; k=0,1,2,3
+
+\[
+\begin{align}
+\bar{s_0}=\cos(2\pi *0*n/N)-j\sin(2\pi *0*n/N)=[1,1,1,1]\\
+\bar{s_1}=\cos(2\pi *1*n/N)-j\sin(2\pi *1*n/N)=[1,-j,-1,j]\\
+\bar{s_2}=\cos(2\pi *2*n/N)-j\sin(2\pi *2*n/N)=[1,-1,1,-1]\\
+\bar{s_3}=\cos(2\pi *3*n/N)-j\sin(2\pi *3*n/N)=[1,j,-1,-j]
+\end{align}
+\]
+
+*** DFT: Scalar product
+\[
+\langle x, s_k \rangle = \sum_{n=0}^{N-1}
+x[n]\bar{s_k}[n]=\sum_{n=0}^{N-1}x[n]e^{-j2\pi kn/N
+}
+\]
+
+Example:
+x[n] = [1,-1,1,-1]; N=4
+
+\begin{align}
+\langle x, s_0 \rangle = 1*1 + (-1) *1+1 * 1+(-1) *1 = 0\\
+\langle x, s_1 \rangle = 1*1 + (-1) *(-j)+1 * (-1) +(-1) *j = 0\\
+\langle x, s_2 \rangle = 1*1 + (-1) *(-1)+1 * 1+(-1) *(-1) = 4\\
+\langle x, s_3 \rangle = 1*1 + (-1) *(-j)+1 * (-1)+(-1) *j = 0
+\end{align}
+
+*** Reference
+    - https://en.wikipedia.org/wiki/Discrete_Fourier_transform
+    - DFT from Julius O. Smith: https://ccrma.stanford.edu/~jos/mdft/
+
+** 2T2 Theory Lecture 2: DFT 2
+*** DFT of complex sinusoid
+\[
+x_1[n] = e^{j2\pi k_0 n/N} \text{ for } n=0,...,N-1
+\]
+
+\begin{equation}
+\begin{split}
+X_1[k] = \sum_{n=0}^{N-1} x_1 [n]e^{-j2\pi kn/N}\\
+ = \sum_{n=0}^{N-1} e^{j2\pi k_0 n/N} e^{-j2\pi kn/N}\\
+ = \sum_{n=0}^{N-1} e^{-j2\pi (k - k_0) n/N} \\
+ = \frac{ 1 - e^{-j2\pi (k - k0)} }{ 1 - e^{-j2\pi (k - k0)/N} }
+\end{split}
+\end{equation}
+
+(sum of a geometric series)
+
+if $k \neq k_0$, denominator $\neq ,0$ and numerator $= 0$ thus
+$X_1
+[k] = N$ for $k = k_0$ and $X_1 [k] = 0$ for $k \neq k_0$
+
+*** DFT of any complex sinusoid
+
+\[ x_2 [n] = e^{j(2\pi f_s n+\varphi)} \text{ for } n=0,...,N-1
+ \]
+
+\begin{equation}
+\begin{split}
+X_2[k] = \sum_{n=0}^{N-1} x_2[n] e^{-j2\pi kn/N}\\
+ = \sum_{n=0}^{N-1} e^{j(2\pi f_0 n+\varphi} e^{-j2\pi kn/N}\\
+ = e^{j\varphi} \sum_{n=0}^{N-1} e^{-j2\pi(k/N - f_0)/n}\\
+ = e^{j\varphi} \frac{ 1 - e^{-j2\pi(k/N - f_0)/N }}{ 1 - e^{-j2\pi(k/N - f_0)}}
+\end{split}
+\end{equation}
+
+*** DFT of real sinusoids
+\[ x_3 [n]= A_0 \cos(2\pi k_0 n/N) = \frac{A_0}{2} e^{j2\pi k_0
+n/N} + \frac{A_0}{2} e^{-j2\pi k_0 n/N}
+\]
+
+\begin{equation}
+\begin{split}
+X_3 [k] = \sum_{n=-N/2}^{N/2 -1} x_3 [n] e^{-j2\pi kn/N}\\
+=  \sum_{n=-N/2}^{N/2 -1} \left( \frac{A_0}{2} e^{j2\pi k_0
+n/N} + \frac{A_0}{2} e^{-j2\pi k_0 n/N} \right) e^{-j2\pi kn/N}\\
+= \sum_{n=-N/2}^{N/2 -1} \frac{A_0}{2} e^{j2\pi k_0 n/N} e^{-j2\pi kn/N}
++ \sum_{n=-N/2}^{N/2 -1} \frac{A_0}{2} e^{-j2\pi k_0 n/N}  e^{-j2\pi kn/N}\\
+= \sum_{n=-N/2}^{N/2 -1} \frac{A_0}{2} e^{-j2\pi (k-k_0) n/N}
++ \sum_{n=-N/2}^{N/2 -1} \frac{A_0}{2} e^{-j2\pi (k+k_0) n/N}\\
+= N \frac{A_0}{2} \text{ for } k=k_0 , -k_0 ; 0 \text{ for rest of } k
+\end{split}
+\end{equation}
+
+*** Inverse DFT
+\[ x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X[k]s_k [n] = \frac{1}{N}
+\sum_{k=0}^{N-1} X[k] e^{j2\pi kn/N} \text{ for } n=0,1,...,N-1 \]
+
+Example:
+
+  X[k] = [0,4,0,0]; N = 4
+
+x[0] = X * s[n=0] = 0 * 1 + 4* 1    + 0 * 1    + 0 * 1    =  4
+x[1] = X * s[n=1] = 0 * 1 + 4* j    + 0 * (-1) + 0 * (-j) =  4j
+x[2] = X * s[n=2] = 0 * 1 + 4* (-1) + 0 * 1    + 0 * (-1) = -4
+x[3] = X * s[n=3] = 0 * 1 + 4* (-j) + 0 * (-1) + 0 * j    = -4j
+
+** 2D1: Analyzing a sound
+** 2D2: Freesound
+   [[www.freesound.org]]
+* Week 8: Sound transformations
+* Week 9: Sound/music description
+* Week 10: Concluding topics
